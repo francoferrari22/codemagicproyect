@@ -1,0 +1,30 @@
+workflows:
+  ferraripos-mobile-android:
+    name: FerrariPOS Mobile Android
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      flutter: stable
+    triggering:
+      events:
+        - push
+        - pull_request
+        - tag
+        - manual
+      branch_patterns:
+        - pattern: main
+          include: true
+        - pattern: master
+          include: true
+    scripts:
+      - name: Flutter version
+        script: flutter --version
+      - name: Get dependencies
+        script: cd mobile && flutter pub get
+      - name: Analyze
+        script: cd mobile && flutter analyze
+      - name: Build release APK
+        script: cd mobile && flutter build apk --release
+    artifacts:
+      - mobile/build/app/outputs/flutter-apk/*.apk
+      - mobile/build/app/outputs/flutter-apk/*.sha1
